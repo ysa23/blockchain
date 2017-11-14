@@ -1,7 +1,6 @@
 from textwrap import dedent
-from flask import Flask
+from flask import Flask, jsonify, request
 from uuid import uuid4
-from flask import jsonify
 from blockchain import Blockchain
 
 app = Flask(__name__)
@@ -16,7 +15,18 @@ def mine():
 
 @app.route('/transactions/new', methods=['POST'])
 def new_transaction():
-    return "We'll add a new transaction"
+    transaction = request.get_json()
+    required = ['sender', 'recipient', 'amount']
+    if not all(k in transaction for k in required):
+        return 'Missing values in transaction', 400
+
+    index = blockchain.new_transaction(transaction['sender'], transaction['recipient'], transaction['amount'])
+
+    response = {
+        'message': f'Transaction will be added to Block {index}'
+    }
+
+    return jsonify(response), 201
 
 @app.route('/chain', methods=['GET'])
 def full_chain():
