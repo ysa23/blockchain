@@ -1,7 +1,7 @@
 from textwrap import dedent
 from flask import Flask
 from uuid import uuid4
-import json
+from flask import jsonify
 from blockchain import Blockchain
 
 app = Flask(__name__)
